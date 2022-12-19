@@ -1,6 +1,4 @@
-import Head from 'next/head';
-import Image from 'next/image';
-
+/* eslint-disable @next/next/no-html-link-for-pages */
 export default function Home() {
   return (
     <div className="bg-gray-50">

@@ -4,11 +4,10 @@ import router from 'next/router';
 import { api } from 'services/api';
 import * as constants from 'config/constants';
 import * as authService from 'services/auth';
-import * as userService from 'services/user';
 import { toast } from 'react-toastify';
 import { Loading } from 'components/Loading';
 import { useCookies } from 'hooks/useCookies';
-
+import { Layout } from 'components/Layout';
 
 export const AuthContext = createContext();
 
@@ -28,25 +27,20 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       return;
     }
-
     setUser(jwtDecode(token.access));
     api.setHeader(token.access);
     setToken(token);
   };
 
-  const login = async ({ data, redirectTo = "/dashboard" }) => {
-    setLoading(true);
+  const login = async ({ data, redirectTo = '/dashboard' }) => {
     const result = await authService.login(data);
     handleAuth(result.data?.token, result.error);
-    setLoading(false);
     router.push(redirectTo);
   };
 
-  const signup = async ({ data, redirectTo = "/dashboard" }) => {
-    setLoading(true);
+  const signup = async ({ data, redirectTo = '/dashboard' }) => {
     const result = await auth.signup(data);
     handleAuth(result.data?.token, result.error);
-    setLoading(false);
     router.push(redirectTo);
   };
 
@@ -68,7 +62,13 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {loading ? <></> : children}
+      {loading ? (
+        <Layout>
+          <Loading />
+        </Layout>
+      ) : (
+        children
+      )}
     </AuthContext.Provider>
   );
 };

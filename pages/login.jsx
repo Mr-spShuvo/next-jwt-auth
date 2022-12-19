@@ -1,16 +1,14 @@
 import { useState } from 'react';
 import { Login } from 'components/Login';
-import { login } from 'services/auth';
-import Cookies from 'js-cookie';
-import * as constants from 'config/constants';
-import router from 'next/router';
 import { useAuth } from 'hooks/useAuth';
 
 const initialState = { email: '', password: '' };
 
 export default function LoginPage() {
   const [data, setData] = useState(() => initialState);
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+
   const handleChange = event => {
     const { name, value } = event.target;
     setData(prevData => ({ ...prevData, [name]: value }));
@@ -18,8 +16,10 @@ export default function LoginPage() {
 
   const handleSubmit = async event => {
     event.preventDefault();
+    setLoading(true);
     await login({ data });
+    setLoading(false);
   };
 
-  return <Login data={data} onChange={handleChange} onSubmit={handleSubmit} />;
+  return <Login loading={loading} data={data} onChange={handleChange} onSubmit={handleSubmit} />;
 }

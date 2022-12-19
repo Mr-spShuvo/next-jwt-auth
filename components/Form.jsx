@@ -2,7 +2,7 @@ import { LockClosedIcon } from '@heroicons/react/20/solid';
 import { Button } from './Button';
 import { Input } from './Input';
 
-export const Form = ({ data, onChange, onSubmit }) => {
+export const Form = ({ loading, data, onChange, onSubmit }) => {
   return (
     <form className="mt-8 space-y-6" onSubmit={onSubmit}>
       <input type="hidden" name="remember" defaultValue="true" />
@@ -53,6 +53,7 @@ export const Form = ({ data, onChange, onSubmit }) => {
         <Button
           type="submit"
           label="Sign in"
+          loading={loading}
           icon={
             <LockClosedIcon
               className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"

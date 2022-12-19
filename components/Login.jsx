@@ -2,7 +2,7 @@ import Image from 'next/image';
 import React from 'react';
 import { Form } from './Form';
 
-export const Login = ({ data, onChange, onSubmit }) => {
+export const Login = ({ loading, data, onChange, onSubmit }) => {
   return (
     <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
@@ -24,7 +24,7 @@ export const Login = ({ data, onChange, onSubmit }) => {
             </a>
           </p>
         </div>
-        <Form data={data} onChange={onChange} onSubmit={onSubmit} />
+        <Form loading={loading} data={data} onChange={onChange} onSubmit={onSubmit} />
       </div>
     </div>
   );

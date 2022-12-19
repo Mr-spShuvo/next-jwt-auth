@@ -3,16 +3,18 @@ import * as constants from 'config/constants';
 
 export default function middleware(req) {
   const authCookie = req.cookies.get(constants.AUTH_KEY)?.value;
-  const isLoggedIn = JSON.parse(authCookie)?.access;
-
   const route = req.nextUrl.pathname;
-  if (!isLoggedIn && isProtectedRoutes(route)) {
-    return NextResponse.redirect(new URL('/login', req.url));
-  } else if (isLoggedIn && isRedirectToDashboard(route)) {
-    return NextResponse.redirect(new URL('/dashboard', req.url));
-  } else {
-    return NextResponse.next();
+
+  if (!authCookie) {
+    if (isProtectedRoutes(route)) return NextResponse.redirect(new URL('/login', req.url));
+    else return NextResponse.next();
   }
+
+  const isLoggedIn = JSON.parse(authCookie)?.access;
+  if (!isLoggedIn && isProtectedRoutes(route))
+    return NextResponse.redirect(new URL('/login', req.url));
+  else if (isLoggedIn && shouldRedirectToDashboard(route))
+    return NextResponse.redirect(new URL('/dashboard', req.url));
 }
 
 const isProtectedRoutes = route => {
@@ -20,7 +22,7 @@ const isProtectedRoutes = route => {
   return protectedRoutes.find(protectedRoute => protectedRoute === route);
 };
 
-const isRedirectToDashboard = route => {
+const shouldRedirectToDashboard = route => {
   const routes = ['/login', '/signup', '/forgot-password', '/reset-password'];
   return routes.find(redirectRoute => redirectRoute === route);
 };
