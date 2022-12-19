@@ -1,14 +1,15 @@
 import { ProfileCard } from 'components/ProfileCard';
 import { Layout } from 'components/Layout';
-import { withAuth } from 'utils/withAuth';
 import { RouteWrapper } from 'utils/RouteWrapper';
 
-function DashboardPage() {
+function ProfilePage() {
   return (
-    <Layout>
-      <ProfileCard />
-    </Layout>
+    <RouteWrapper>
+      <Layout>
+        <ProfileCard />
+      </Layout>
+    </RouteWrapper>
   );
 }
 
-export default withAuth(DashboardPage);
+export default ProfilePage;

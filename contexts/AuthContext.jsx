@@ -6,8 +6,8 @@ import * as constants from 'config/constants';
 import * as authService from 'services/auth';
 import { toast } from 'react-toastify';
 import { Loading } from 'components/Loading';
-import { useCookies } from 'hooks/useCookies';
 import { Layout } from 'components/Layout';
+import { useLocalStorage } from 'hooks/useLocalStorage';
 
 export const AuthContext = createContext();
 
@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useCookies(constants.AUTH_KEY);
+  const [token, setToken] = useLocalStorage(constants.AUTH_KEY);
 
   const handleAuth = (token, error) => {
     if (error) {

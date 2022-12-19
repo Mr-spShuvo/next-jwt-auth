@@ -1,7 +1,6 @@
 import axios from 'axios';
 import * as constants from 'config/constants';
 import * as endpoints from 'config/endpoints';
-import Cookies from 'js-cookie';
 
 export const api = axios.create();
 api.defaults.baseURL = endpoints.BASE_URL || 'https://devfolio-io.herokuapp.com';
@@ -17,26 +16,27 @@ api.interceptors.response.use(
   },
   error => {
     const originalRequest = error.config;
-    if (error?.response?.status === 401 && !originalRequest?._retry) {
-      if (typeof window !== 'undefined') {
-        const { refresh } = JSON.parse(Cookies.get(constants.AUTH_KEY));
+    if (
+      error?.response?.status === 401 &&
+      !originalRequest?._retry &&
+      typeof window !== 'undefined'
+    ) {
+      const { refresh } = JSON.parse(localStorage.getItem(constants.authHeaderKey));
+      originalRequest._retry = true;
 
-        originalRequest._retry = true;
-
-        return api
-          .post(`${baseURL}${endpoints.REFRESH_TOKEN}`, {
-            token: refresh
-          })
-          .then(res => {
-            if (res.status === 201) {
-              const { token } = res.data.data;
-              Cookies.set(constants.AUTH_KEY, JSON.stringify(token));
-              api.setHeader(token.access);
-              originalRequest.headers[constants.AUTH_KEY] = token.access;
-              return api(originalRequest);
-            }
-          });
-      }
+      return api
+        .post(`${baseURL}${endpoints().auth.refresh.path}`, {
+          token: refresh
+        })
+        .then(res => {
+          if (res.status === 201) {
+            const { token } = res.data.data;
+            localStorage.setItem(constants.authHeaderKey, JSON.stringify(token));
+            api.setHeader(token.access);
+            originalRequest.headers[constants.authHeaderKey] = token.access;
+            return api(originalRequest);
+          }
+        });
     }
     const isExpectedError =
       error?.response && error?.response?.status >= 400 && error?.response?.status < 500;
