@@ -1,7 +1,9 @@
 const { NextResponse } = require('next/server');
+import * as constants from 'config/constants';
 
 export default function middleware(req) {
-  const isLoggedIn = req.cookies.get('access-token')?.value;
+  const authCookie = req.cookies.get(constants.AUTH_KEY)?.value;
+  const isLoggedIn = JSON.parse(authCookie)?.access;
 
   const route = req.nextUrl.pathname;
   if (!isLoggedIn && isProtectedRoutes(route)) {

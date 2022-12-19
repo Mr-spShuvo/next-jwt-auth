@@ -1,10 +1,10 @@
 import axios from 'axios';
 import * as constants from 'config/constants';
 import * as endpoints from 'config/endpoints';
+import Cookies from 'js-cookie';
 
-const api = axios.create();
+export const api = axios.create();
 api.defaults.baseURL = endpoints.BASE_URL || 'https://devfolio-io.herokuapp.com';
-console.log(process.env);
 
 api.setHeader = token => {
   if (token) api.defaults.headers.common[constants.AUTH_KEY] = token;
@@ -19,7 +19,8 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     if (error?.response?.status === 401 && !originalRequest?._retry) {
       if (typeof window !== 'undefined') {
-        const { refresh } = JSON.parse(localStorage.getItem(constants.AUTH_KEY));
+        const { refresh } = JSON.parse(Cookies.get(constants.AUTH_KEY));
+
         originalRequest._retry = true;
 
         return api
@@ -29,7 +30,7 @@ api.interceptors.response.use(
           .then(res => {
             if (res.status === 201) {
               const { token } = res.data.data;
-              localStorage.setItem(constants.AUTH_KEY, JSON.stringify(token));
+              Cookies.set(constants.AUTH_KEY, JSON.stringify(token));
               api.setHeader(token.access);
               originalRequest.headers[constants.AUTH_KEY] = token.access;
               return api(originalRequest);
@@ -46,5 +47,3 @@ api.interceptors.response.use(
     }
   }
 );
-
-export default api;

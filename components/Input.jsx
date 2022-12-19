@@ -1,5 +1,5 @@
 export const Input = ({
-  labelgit,
+  label,
   type,
   name,
   autoComplete,
