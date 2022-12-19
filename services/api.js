@@ -1,8 +1,10 @@
 import axios from 'axios';
-import { constants, endpoints } from 'config';
+import * as constants from 'config/constants';
+import * as endpoints from 'config/endpoints';
 
 const api = axios.create();
-api.defaults.baseURL = endpoints.BASE_URL;
+api.defaults.baseURL = endpoints.BASE_URL || 'https://devfolio-io.herokuapp.com';
+console.log(process.env);
 
 api.setHeader = token => {
   if (token) api.defaults.headers.common[constants.AUTH_KEY] = token;

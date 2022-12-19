@@ -1,4 +1,4 @@
-export const BASE_URL = process.env.API_ENDPOINT;
+export const BASE_URL = process.env.NEXT_APP_API_ENDPOINT;
 export const GET_TOKEN = '/auth/login';
 export const REFRESH_TOKEN = '/auth/refresh';
 export const RESET_PASSWORD = '/auth/reset-password';

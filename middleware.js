@@ -1,8 +1,8 @@
-import { constants } from 'config';
 const { NextResponse } = require('next/server');
 
 export default function middleware(req) {
-  const isLoggedIn = req.cookies.get(constants.AUTH_KEY);
+  const isLoggedIn = req.cookies.get('access-token')?.value;
+
   const route = req.nextUrl.pathname;
   if (!isLoggedIn && isProtectedRoutes(route)) {
     return NextResponse.redirect(new URL('/login', req.url));
